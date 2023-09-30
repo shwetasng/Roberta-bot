@@ -8,6 +8,7 @@ pipeline {
                 sh 'echo building...'
                 sh 'echo checking build pipeline'
                 sh 'echo checking build pipeline'
+                sh 'echo checking with ngrok'
             }
         }
     }
