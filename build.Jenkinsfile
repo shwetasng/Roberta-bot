@@ -4,12 +4,13 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'ls'
-                sh 'echo building...'
-                sh 'echo checking build pipeline'
-                sh 'echo checking build pipeline'
-                sh 'echo checking with ngrok'
-            }
+                sh '''
+                    docker login ...
+                    docker build ...
+                    docker tag ...
+                    docker push ...
+                '''
+                }
         }
     }
 }
