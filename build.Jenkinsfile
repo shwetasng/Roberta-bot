@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        
+        // add jenkins to docker group first.
         DOCKER_HUB_REGISTRY = "docker.io"
         DOCKER_HUB_CREDENTIALS = credentials('DockerHub')
         DOCKER_IMAGE_NAME = "shwetasng/roberta"
