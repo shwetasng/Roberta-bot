@@ -1,31 +1,28 @@
 pipeline {
     agent any
 
-    environment {
-        // add jenkins to docker group first.
-        DOCKER_HUB_REGISTRY = "docker.io"
-        DOCKER_HUB_CREDENTIALS = credentials('DockerHub')
-        DOCKER_IMAGE_NAME = "shwetasng/roberta"
-        DOCKER_IMAGE_VERSION = "v1.0" 
-    }
 
     stages {
         stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build("${DOCKER_HUB_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}")
+            steps{
+                withCredentials([
+                    usernamePassword(CredentialdId: 'DockerHub', usernameVariable: 'USERNAME', passwordVariable:'password')
+                ]) {
+                    sh '''
+                    docker login --username $USERNAME --password $PASSWORD
+                    docker build -t roberta:latest .
+                    docker tag roberta:latest shwetasng/roberta:latest
+                    docker push shwetasng/roberta:latest
+                    '''
                 }
             }
         }
-
-        stage('Push Docker Image to Docker Hub') {
-            steps {
-                script {
-                    docker.withRegistry("${DOCKER_HUB_REGISTRY}", "${DOCKER_HUB_CREDENTIALS}") {
-                        docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}").push()
-                    }
-                }
-            }
-        }
+        // stage('Trigger Deploy') {
+        //     steps {
+        //         build job: '<deploy-job-name>', wait: false, parameters: [
+        //         string(name: 'ROBERTA_IMAGE_URL', value: "<full-url-to-docker-image>")
+        // ]
+        //     }
+        // }
     }
 }
